@@ -2190,7 +2190,8 @@ Platforms: Android & iOS
 Checks if camera is available.
 
 Notes:
-- On Android & iOS this returns true if the device has a camera AND the application is authorized to use it.
+- On Android this returns true if the device has a camera.
+- On iOS this returns true if both the device has a camera AND the application is authorized to use it. On Windows 10 Mobile this returns true if both the device has a rear-facing camera AND the application is authorized to use it.
 
 Notes for Android:
 - On Android by default this checks run-time permission for both `READ_EXTERNAL_STORAGE` and `CAMERA` because [cordova-plugin-camera@2.2+](https://github.com/apache/cordova-plugin-camera) requires both of these permissions.
