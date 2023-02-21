@@ -333,6 +333,31 @@ interface Diagnostic {
     ) => void;
 
     /**
+     *
+     * Checks if accessibility mode is enabled on device.
+     *
+     * @param successCallback
+     * @param errorCallback
+     */
+    isAccessibilityModeEnabled?: (
+            successCallback: () => boolean,
+            errorCallback: (error: string) => void
+        ) => void;
+
+    /**
+     * ANDROID ONLY
+     *
+     * Checks if touch exploration of accessibility mode is enabled on device.
+     *
+     * @param successCallback
+     * @param errorCallback
+     */
+    isTouchExplorationEnabled?: (
+        successCallback: () => boolean,
+        errorCallback: (error: string) => void
+    ) => void;
+        
+    /**
      * Returns details of the OS of the device on which the app is currently running
      *
      * @param successCallback

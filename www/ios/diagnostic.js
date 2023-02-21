@@ -169,6 +169,23 @@ var Diagnostic = (function(){
             []);
     };
 
+
+    /**
+     * Checks if accessibility mode (VoiceOver) is enabled/running on device.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single boolean parameter which is TRUE if accessibility mode is enabled.
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.isAccessibilityModeEnabled = function(successCallback, errorCallback) {
+        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
+            errorCallback,
+            'Diagnostic',
+            'isAccessibilityModeEnabled',
+            []);
+    };
+
     /**
      * Returns details of the OS of the device on which the app is currently running
      *

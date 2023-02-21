@@ -229,6 +229,18 @@ static CTCellularData* cellularData;
     }];
 }
 
+- (void) isAccessibilityModeEnabled: (CDVInvokedUrlCommand*)command
+{
+    [self.commandDelegate runInBackground:^{
+        @try {
+            bool isEnabled = UIAccessibilityIsVoiceOverRunning();
+            [diagnostic sendPluginResultBool:isEnabled :command];
+        }
+        @catch (NSException *exception) {
+            [diagnostic handlePluginException:exception :command];
+        }
+    }];
+}
 
 /********************************/
 #pragma mark - Send results

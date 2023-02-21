@@ -961,6 +961,49 @@ The function is passed a single string parameter containing the error message.
         console.log(`Mobile data is currently ${enabled ? 'enabled' : 'disabled'}%`);
     });
     
+### isAccessibilityModeEnabled()
+
+Platforms: Android and iOS
+
+Checks if Accessibility Mode (Talkback on Android, VoiceOver on iOS) is currently enabled on the device.
+
+    cordova.plugins.diagnostic.isAccessibilityModeEnabled(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when the operation is successful.
+This callback function is passed a single boolean parameter which is TRUE if accessibility mode is enabled.
+- {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+ This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isAccessibilityModeEnabled(function(enabled){
+        console.log(`Accessibility Mode is currently ${enabled ? 'enabled' : 'disabled'}%`);
+    });
+    
+
+### isTouchExplorationEnabled()
+
+Platforms: Android
+
+Checks if touch exploration (in accessibility mode) is currently enabled on the device.
+
+    cordova.plugins.diagnostic.isTouchExplorationEnabled(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when the operation is successful.
+This callback function is passed a single boolean parameter which is TRUE if touch exploration (in accessibility mode) is enabled.
+- {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+ This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isTouchExplorationEnabled(function(enabled){
+        console.log(`touch exploration is currently ${enabled ? 'enabled' : 'disabled'}%`);
+    });
+    
 
 ### getDeviceOSVersion()
 

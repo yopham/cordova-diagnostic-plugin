@@ -60,6 +60,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.provider.Settings;
+import android.view.accessibility.AccessibilityManager;
 
 
 import androidx.core.app.ActivityCompat;
@@ -281,6 +282,10 @@ public class Diagnostic extends CordovaPlugin{
                 callbackContext.success(isDeviceRooted() ? 1 : 0);
             } else if(action.equals("isMobileDataEnabled")) {
                 callbackContext.success(isMobileDataEnabled() ? 1 : 0);
+            } else if(action.equals("isAccessibilityModeEnabled")) {
+                callbackContext.success(isAccessibilityModeEnabled() ? 1 : 0);
+            } else if (action.equals("isTouchExplorationEnabled")) {
+                callbackContext.success(isAccessibilityTouchExplorationEnabled() ? 1 : 0);
             } else if(action.equals("restart")) {
                 this.restart(args);
             } else if(action.equals("getArchitecture")) {
@@ -461,6 +466,30 @@ public class Diagnostic extends CordovaPlugin{
             logDebug(e.getMessage());
         }
         return mobileDataEnabled;
+    }
+
+    public boolean isAccessibilityModeEnabled(){
+        boolean result = false;
+        try {
+            AccessibilityManager am = (AccessibilityManager) cordova.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
+            result = am.isEnabled();
+        } catch (Exception e) {
+            logDebug(e.getMessage());
+        }
+        logDebug("Accessibility mode enabled: " + result);
+        return result;
+    }
+
+    public boolean isAccessibilityTouchExplorationEnabled() {
+        boolean result = false;
+        try {
+            AccessibilityManager am = (AccessibilityManager) cordova.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
+            result = am.isTouchExplorationEnabled();
+        } catch (Exception e) {
+            logDebug(e.getMessage());
+        }
+        logDebug("Accessibility touch exploration enabled: " + result);
+        return result;
     }
 
     /************
