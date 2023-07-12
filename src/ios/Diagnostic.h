@@ -38,6 +38,7 @@ extern NSString*const AUTHORIZATION_LIMITED;
 - (void) getDeviceOSVersion: (CDVInvokedUrlCommand*)command;
 - (void) getBuildOSVersion: (CDVInvokedUrlCommand*)command;
 - (void) isMobileDataEnabled: (CDVInvokedUrlCommand*)command;
+- (void) isAccessibilityModeEnabled: (CDVInvokedUrlCommand*)command;
 
 // Utilities
 + (id) getInstance;
