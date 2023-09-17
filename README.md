@@ -2733,7 +2733,7 @@ The function is passed a single string parameter containing the error message.
                 console.log("Provisional permission granted");
                 break;
             case cordova.plugins.diagnostic.permissionStatus.EPHEMERAL:
-                console.log("Provisional permission granted");
+                console.log("Ephemeral permission granted");
                 break;
         }
     }, function(error){
