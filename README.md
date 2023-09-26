@@ -1598,7 +1598,7 @@ You'll need to add this entry using a `<config-file>` block in your `config.xml`
 
 
     <platform name="ios">
-      <config-file platform="ios" target="*-Info.plist" parent="NSLocationTemporaryUsageDescriptionDictionary">
+      <config-file target="*-Info.plist" parent="NSLocationTemporaryUsageDescriptionDictionary">
         <dict>
           <key>navigation</key>
           <string>This app requires access to your exact location in order to provide SatNav route navigation.</string>
@@ -2554,7 +2554,7 @@ Platforms: iOS
 - Can only be used if the automatic prompt to select limited library is disabled in the app's `Info.plist` by adding the following section to `<platform name="ios">` in the app's `config.xml`:
 
 ```xml
-<config-file parent="PHPhotoLibraryPreventAutomaticLimitedAccessAlert" platform="ios" target="*-Info.plist">
+<config-file target="*-Info.plist" parent="PHPhotoLibraryPreventAutomaticLimitedAccessAlert">
   <true/>
 </config-file>
 ```
@@ -3882,10 +3882,10 @@ To override these defaults, you can use `<config-file>` blocks in your `config.x
 `config.xml`
 
     <platform name="ios">
-        <config-file platform="ios" target="*-Info.plist" parent="NSLocationAlwaysUsageDescription">
+        <config-file target="*-Info.plist" parent="NSLocationAlwaysUsageDescription">
             <string>My custom message for always using location.</string>
         </config-file>
-        <config-file platform="ios" target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
+        <config-file target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
             <string>My custom message for using location when in use.</string>
         </config-file>
     </platform>
