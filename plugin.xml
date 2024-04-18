@@ -29,6 +29,8 @@
             <merges target="cordova.plugins.diagnostic" />
         </js-module>
 
+        <resource-file src="src/ios/Diagnostic_Resources.bundle" target="Diagnostic_Resources.bundle" />
+
         <header-file src="src/ios/Diagnostic.h" />
         <source-file src="src/ios/Diagnostic.m" />
 
