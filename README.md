@@ -2689,11 +2689,11 @@ Requests remote notifications authorization for the application.
 
 ### switchToNotificationSettings()
 
-Platforms: Android
+Platforms: Android & iOS
 
 Open notification settings for your app
 
-On Android versions lower than O, this will open the same page as `switchToSettings()`.
+On Android versions lower than O and on iOS versions lower than 15.4, this will open the same page as `switchToSettings()`.
 
     cordova.plugins.diagnostic.switchToNotificationSettings();
 
