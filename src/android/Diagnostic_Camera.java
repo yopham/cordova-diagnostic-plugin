@@ -22,10 +22,8 @@ package cordova.plugins;
  * Imports
  */
 
-import android.Manifest;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
-import android.os.Build;
 import android.util.Log;
 
 import org.apache.cordova.CallbackContext;
