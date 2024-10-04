@@ -1599,11 +1599,11 @@ Requests temporary access to full location accuracy for the application on iOS 1
 - By default on iOS 14+, when a user grants location permission, the app can only receive reduced accuracy locations.
 - If your app requires full (high-accuracy GPS) locations (e.g. a SatNav app), you need to call this method.
 - You must specify a purpose corresponds to a key in the `NSLocationTemporaryUsageDescriptionDictionary` entry in your app's `*-Info.plist` containing a message explaining the user why your app needs their exact location.
-You'll need to add this entry using a `<config-file>` block in your `config.xml`, e.g.:
+You'll need to add this entry using a `<config-file>` or `<edit-config>` block in your `config.xml`, e.g.:
 
 
     <platform name="ios">
-      <config-file platform="ios" target="*-Info.plist" parent="NSLocationTemporaryUsageDescriptionDictionary">
+      <config-file target="*-Info.plist" parent="NSLocationTemporaryUsageDescriptionDictionary">
         <dict>
           <key>navigation</key>
           <string>This app requires access to your exact location in order to provide SatNav route navigation.</string>
@@ -2462,7 +2462,7 @@ Platforms: iOS
 - Can only be used if the automatic prompt to select limited library is disabled in the app's `Info.plist` by adding the following section to `<platform name="ios">` in the app's `config.xml`:
 
 ```xml
-<config-file parent="PHPhotoLibraryPreventAutomaticLimitedAccessAlert" platform="ios" target="*-Info.plist">
+<config-file target="*-Info.plist" parent="PHPhotoLibraryPreventAutomaticLimitedAccessAlert">
   <true/>
 </config-file>
 ```
@@ -3783,17 +3783,17 @@ When requesting permission to use device functionality, a message is displayed t
 These messages are stored in the `{project}-Info.plist` file under `NS*UsageDescription` keys.
 
 Upon installing this plugin into your project, it will add the following default messages to your plist.
-To override these defaults, you can use `<config-file>` blocks in your `config.xml`:
+To override these defaults, you can use `<edit-config>` blocks in your `config.xml`:
 
 `config.xml`
 
     <platform name="ios">
-        <config-file platform="ios" target="*-Info.plist" parent="NSLocationAlwaysUsageDescription">
+        <edit-config file="*-Info.plist" target="NSLocationAlwaysUsageDescription" mode="merge">
             <string>My custom message for always using location.</string>
-        </config-file>
-        <config-file platform="ios" target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
+        </edit-config>
+        <edit-config file="*-Info.plist" target="NSLocationWhenInUseUsageDescription" mode="merge">
             <string>My custom message for using location when in use.</string>
-        </config-file>
+        </edit-config>
     </platform>
 
 # Example project
