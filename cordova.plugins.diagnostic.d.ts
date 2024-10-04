@@ -1016,6 +1016,14 @@ interface Diagnostic {
     ) => void;
 
     /**
+     * Opens the notification settings page for this app.
+     */
+    switchToNotificationSettings?: (
+        successCallback: () => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
      * ANDROID ONLY
      * Checks if ADB mode(debug mode) is enabled.
      * @param successCallback
