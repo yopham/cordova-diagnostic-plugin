@@ -187,7 +187,7 @@ public class Diagnostic extends CordovaPlugin{
         Map<String, Integer> _permissionsMap = new HashMap <String, Integer>();
 
         Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_EXTERNAL_STORAGE", 32);
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "WRITE_EXTERNAL_STORAGE", 29);
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "WRITE_EXTERNAL_STORAGE", 32);
 
         maxSdkPermissionMap = Collections.unmodifiableMap(_permissionsMap);
     }
