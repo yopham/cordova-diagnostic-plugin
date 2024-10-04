@@ -713,6 +713,21 @@ var Diagnostic = (function(){
     };
 
     /**
+     * Switches to the notification settings page in the Settings app
+     * 
+     * @param {Function} successCallback - The callback which will be called when switch to settings is successful.
+     * @param {Function} errorCallback - The callback which will be called when switch to settings encounters an error.
+     * This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.switchToNotificationSettings = function(successCallback, errorCallback) {
+        if (cordova.plugins.diagnostic.notifications){
+            cordova.plugins.diagnostic.notifications.switchToNotificationSettings.apply(this, arguments);
+        } else {
+            throw "Diagnostic Notification module is not installed";
+        }
+    };
+
+    /**
      * Indicates the current setting of notification types for the app in the Settings app.
      * Note: if "Allow Notifications" switch is OFF, all types will be returned as disabled.
      *

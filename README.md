@@ -235,6 +235,11 @@ To install only the core module and no optional modules, leave the preference va
 
     <preference name="cordova.plugins.diagnostic.modules" value="" />
 
+**IMPORTANT:** After adding the preference to your `config.xml`, you'll need to uninstall then re-install the plugin to your project to apply the changes:
+```
+cordova plugin rm cordova.plugins.diagnostic --nosave && cordova plugin add cordova.plugins.diagnostic --nosave
+```
+
 ### Available modules
 
 The following optional modules are currently supported by the plugin:
@@ -870,7 +875,7 @@ The function is passed a single string parameter containing the error message.
 
 Platforms: Android and iOS
 
-Enables debug mode, which logs native debug messages to the native and JS consoles.
+Enables the plugin's debug mode, which logs native debug messages related to anything done with the plugin to the native and JS consoles.
 - For Android, log messages will appear in the native logcat output and in the JS console if Chrome Developer Tools is connected to the app Webview.
 - For iOS, log messages will appear in the native Xcode console output and in the JS console if Safari Web Inspector is connected to the app Webview.
 - Debug mode is initially disabled on plugin initialisation.
@@ -1637,11 +1642,11 @@ Requests temporary access to full location accuracy for the application on iOS 1
 - By default on iOS 14+, when a user grants location permission, the app can only receive reduced accuracy locations.
 - If your app requires full (high-accuracy GPS) locations (e.g. a SatNav app), you need to call this method.
 - You must specify a purpose corresponds to a key in the `NSLocationTemporaryUsageDescriptionDictionary` entry in your app's `*-Info.plist` containing a message explaining the user why your app needs their exact location.
-You'll need to add this entry using a `<config-file>` block in your `config.xml`, e.g.:
+You'll need to add this entry using a `<config-file>` or `<edit-config>` block in your `config.xml`, e.g.:
 
 
     <platform name="ios">
-      <config-file platform="ios" target="*-Info.plist" parent="NSLocationTemporaryUsageDescriptionDictionary">
+      <config-file target="*-Info.plist" parent="NSLocationTemporaryUsageDescriptionDictionary">
         <dict>
           <key>navigation</key>
           <string>This app requires access to your exact location in order to provide SatNav route navigation.</string>
@@ -2239,13 +2244,11 @@ Notes:
 - On Windows 10 Mobile this returns true if both the device has a rear-facing camera AND the application is authorized to use it.
 
 Notes for Android:
-- On Android by default this checks run-time permission for both `READ_EXTERNAL_STORAGE` and `CAMERA` because [cordova-plugin-camera@2.2+](https://github.com/apache/cordova-plugin-camera) requires both of these permissions.
-- The call signature `cordova.plugins.diagnostic.isCameraAvailable(successCallback, errorCallback, externalStorage)` is also supported for benefit of the [ionic-native Promise API wrapper](https://github.com/driftyco/ionic-native/blob/master/src/%40ionic-native/plugins/diagnostic/index.ts).
+- By default this also checks run-time storage permissions in addition to `CAMERA` permission because [cordova-plugin-camera](https://github.com/apache/cordova-plugin-camera) requires both of these permission sets.
+  - On Android 13+, storage permissions are `READ_MEDIA_IMAGES` and `READ_MEDIA_VIDEO`. On Android 12 and below, storage permissions are `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE`.
 
 ```
-cordova.plugins.diagnostic.isCameraAvailable(params);
-cordova.plugins.diagnostic.isCameraAvailable(successCallback, errorCallback, params)
-cordova.plugins.diagnostic.isCameraAvailable(successCallback, errorCallback, externalStorage)
+cordova.plugins.diagnostic.isCameraAvailable(successCallback, errorCallback, storage)
 ```
 
 #### Parameters
@@ -2254,31 +2257,10 @@ cordova.plugins.diagnostic.isCameraAvailable(successCallback, errorCallback, ext
 The function is passed a single boolean parameter which is TRUE if camera is present and authorized for use.
     - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 The function is passed a single string parameter containing the error message.
-    - {Boolean} externalStorage - (Android only) If true, checks permission for `READ_EXTERNAL_STORAGE` in addition to `CAMERA` run-time permission.
-Defaults to true.
+  - {Boolean} storage - (Android only) If true, requests storage permissions in addition to `CAMERA` run-time permission. Defaults to true.
 
 
 #### Example usage
-
-    cordova.plugins.diagnostic.isCameraAvailable({
-        successCallback: function(available){
-            console.log("Camera is " + (available ? "available" : "not available"));
-        },
-        errorCallback: function(error){
-            console.error("The following error occurred: "+error);
-        },
-        externalStorage: false
-    });
-
-    cordova.plugins.diagnostic.isCameraAvailable(
-        function(available){
-            console.log("Camera is " + (available ? "available" : "not available"));
-        }, function(error){
-            console.error("The following error occurred: "+error);
-        }, {
-            externalStorage: false
-        }
-    );
 
     cordova.plugins.diagnostic.isCameraAvailable(
         function(available){
@@ -2296,13 +2278,11 @@ Checks if the application is authorized to use the camera.
 
 Notes for Android:
 - This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return TRUE as permissions are already granted at installation time.
-- By default this checks run-time permission for both `READ_EXTERNAL_STORAGE` and `CAMERA` because [cordova-plugin-camera@2.2+](https://github.com/apache/cordova-plugin-camera) requires both of these permissions.
-- The call signature `cordova.plugins.diagnostic.isCameraAuthorized(successCallback, errorCallback, externalStorage)` is also supported for benefit of the [ionic-native Promise API wrapper](https://github.com/driftyco/ionic-native/blob/master/src/%40ionic-native/plugins/diagnostic/index.ts).
+- By default this also checks run-time storage permissions in addition to `CAMERA` permission because [cordova-plugin-camera](https://github.com/apache/cordova-plugin-camera) requires both of these permission sets.
+  - On Android 13+, storage permissions are `READ_MEDIA_IMAGES` and `READ_MEDIA_VIDEO`. On Android 12 and below, storage permissions are `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE`.
 
 ```
-cordova.plugins.diagnostic.isCameraAuthorized(params);
-cordova.plugins.diagnostic.isCameraAuthorized(successCallback, errorCallback, params)
-cordova.plugins.diagnostic.isCameraAuthorized(successCallback, errorCallback, externalStorage)
+cordova.plugins.diagnostic.isCameraAuthorized(successCallback, errorCallback, storage)
 ```
 
 #### Parameters
@@ -2311,30 +2291,9 @@ cordova.plugins.diagnostic.isCameraAuthorized(successCallback, errorCallback, ex
 The function is passed a single boolean parameter which is TRUE if camera is authorized for use.
     - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 The function is passed a single string parameter containing the error message.
-    - {Boolean} externalStorage - (Android only) If true, checks permission for `READ_EXTERNAL_STORAGE` in addition to `CAMERA` run-time permission.
-Defaults to true.
+  - {Boolean} storage - (Android only) If true, requests storage permissions in addition to `CAMERA` run-time permission. Defaults to true.
 
 #### Example usage
-
-    cordova.plugins.diagnostic.isCameraAuthorized({
-        successCallback: function(authorized){
-            console.log("App is " + (authorized ? "authorized" : "denied") + " access to the camera");
-        },
-        errorCallback: function(error){
-            console.error("The following error occurred: "+error);
-        },
-        externalStorage: false
-    });
-
-    cordova.plugins.diagnostic.isCameraAuthorized(
-        function(authorized){
-            console.log("App is " + (authorized ? "authorized" : "denied") + " access to the camera");
-        }, function(error){
-            console.error("The following error occurred: "+error);
-        }, {
-            externalStorage: false
-        }
-    );
 
     cordova.plugins.diagnostic.isCameraAuthorized(
         function(authorized){
@@ -2352,13 +2311,11 @@ Returns the camera authorization status for the application.
 
 Notes for Android:
 - This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
-- By default this checks run-time permission for both `READ_EXTERNAL_STORAGE` and `CAMERA` because [cordova-plugin-camera@2.2+](https://github.com/apache/cordova-plugin-camera) requires both of these permissions.
-- The call signature `cordova.plugins.diagnostic.getCameraAuthorizationStatus(successCallback, errorCallback, externalStorage)` is also supported for benefit of the [ionic-native Promise API wrapper](https://github.com/driftyco/ionic-native/blob/master/src/%40ionic-native/plugins/diagnostic/index.ts).
+- By default this also checks run-time storage permissions in addition to `CAMERA` permission because [cordova-plugin-camera](https://github.com/apache/cordova-plugin-camera) requires both of these permission sets.
+  - On Android 13+, storage permissions are `READ_MEDIA_IMAGES` and `READ_MEDIA_VIDEO`. On Android 12 and below, storage permissions are `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE`.
 
 ```
-cordova.plugins.diagnostic.getCameraAuthorizationStatus(params);
-cordova.plugins.diagnostic.getCameraAuthorizationStatus(successCallback, errorCallback, params)
-cordova.plugins.diagnostic.getCameraAuthorizationStatus(successCallback, errorCallback, externalStorage)
+cordova.plugins.diagnostic.getCameraAuthorizationStatus(successCallback, errorCallback, storage)
 ```
 
 #### Parameters
@@ -2367,35 +2324,10 @@ cordova.plugins.diagnostic.getCameraAuthorizationStatus(successCallback, errorCa
 The function is passed a single string parameter which indicates the authorization status as a [permissionStatus constant](#permissionstatus-constants).
     - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 The function is passed a single string parameter containing the error message.
-    - {Boolean} externalStorage - (Android only) If true, checks permission for `READ_EXTERNAL_STORAGE` in addition to `CAMERA` run-time permission.
-Defaults to true.
+  - {Boolean} storage - (Android only) If true, requests storage permissions in addition to `CAMERA` run-time permission. Defaults to true.
 
 
 #### Example usage
-
-    cordova.plugins.diagnostic.getCameraAuthorizationStatus({
-        successCallback: function(status){
-            if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
-                console.log("Camera use is authorized");
-            }
-        },
-        errorCallback: function(error){
-            console.error("The following error occurred: "+error);
-        },
-        externalStorage: false
-    });
-
-    cordova.plugins.diagnostic.getCameraAuthorizationStatus(
-        function(status){
-            if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
-                console.log("Camera use is authorized");
-            }
-        }, function(error){
-            console.error("The following error occurred: "+error);
-        }, {
-            externalStorage: false
-        }
-    );
 
     cordova.plugins.diagnostic.getCameraAuthorizationStatus(
         function(status){
@@ -2421,48 +2353,24 @@ this plugin provides a default message, but you should override this with your s
 
 Notes for Android:
 - This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will have no effect as the permissions are already granted at installation time.
-- By default this requests run-time permission for both `READ_EXTERNAL_STORAGE` and `CAMERA` because [cordova-plugin-camera@2.2+](https://github.com/apache/cordova-plugin-camera) requires both of these permissions.
+- By default this requests run-time storage permissions in addition to `CAMERA` permission because [cordova-plugin-camera](https://github.com/apache/cordova-plugin-camera) requires both of these permission sets.
+  - On Android 13+, storage permissions are `READ_MEDIA_IMAGES` and `READ_MEDIA_VIDEO`. On Android 12 and below, storage permissions are `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE`.
 - Requested run-time permissions which must be added to `AndroidManifest.xml` - see [Android camera permissions](#android-camera-permissions).
-- The call signature `cordova.plugins.diagnostic.requestCameraAuthorization(successCallback, errorCallback, externalStorage)` is also supported for benefit of the [ionic-native Promise API wrapper](https://github.com/driftyco/ionic-native/blob/master/src/%40ionic-native/plugins/diagnostic/index.ts).
 
 ```
-cordova.plugins.diagnostic.requestCameraAuthorization(params);
-cordova.plugins.diagnostic.requestCameraAuthorization(successCallback, errorCallback, params)
-cordova.plugins.diagnostic.requestCameraAuthorization(successCallback, errorCallback, externalStorage)
+cordova.plugins.diagnostic.requestCameraAuthorization(successCallback, errorCallback, storage)
 ```
 
 #### Parameters
 
 - {Object} params - (optional) parameters:
     - {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single string parameter indicating whether access to the camera was granted or denied:
-`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
+The function is passed a single string parameter indicating the resulting permission status.
     - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 The function is passed a single string parameter containing the error message.
-    - {Boolean} externalStorage - (Android only) If true, requests permission for `READ_EXTERNAL_STORAGE` in addition to `CAMERA` run-time permission.
-    Defaults to true.
+    - {Boolean} storage - (Android only) If true, requests storage permissions in addition to `CAMERA` run-time permission. Defaults to true.
 
 #### Example usage
-
-    cordova.plugins.diagnostic.requestCameraAuthorization({
-        successCallback: function(status){
-            console.log("Authorization request for camera use was " + (status == cordova.plugins.diagnostic.permissionStatus.GRANTED ? "granted" : "denied"));
-        },
-        errorCallback: function(error){
-            console.error(error);
-        },
-        externalStorage: false
-    });
-
-    cordova.plugins.diagnostic.requestCameraAuthorization(
-        function(status){
-            console.log("Authorization request for camera use was " + (status == cordova.plugins.diagnostic.permissionStatus.GRANTED ? "granted" : "denied"));
-        }, function(error){
-            console.error("The following error occurred: "+error);
-        }, {
-            externalStorage: false
-        }
-    );
 
     cordova.plugins.diagnostic.requestCameraAuthorization(
         function(status){
@@ -2599,7 +2507,7 @@ Platforms: iOS
 - Can only be used if the automatic prompt to select limited library is disabled in the app's `Info.plist` by adding the following section to `<platform name="ios">` in the app's `config.xml`:
 
 ```xml
-<config-file parent="PHPhotoLibraryPreventAutomaticLimitedAccessAlert" platform="ios" target="*-Info.plist">
+<config-file target="*-Info.plist" parent="PHPhotoLibraryPreventAutomaticLimitedAccessAlert">
   <true/>
 </config-file>
 ```
@@ -2778,7 +2686,7 @@ The function is passed a single string parameter containing the error message.
                 console.log("Provisional permission granted");
                 break;
             case cordova.plugins.diagnostic.permissionStatus.EPHEMERAL:
-                console.log("Provisional permission granted");
+                console.log("Ephemeral permission granted");
                 break;
         }
     }, function(error){
@@ -2826,11 +2734,11 @@ Requests remote notifications authorization for the application.
 
 ### switchToNotificationSettings()
 
-Platforms: Android
+Platforms: Android & iOS
 
 Open notification settings for your app
 
-On Android versions lower than O, this will open the same page as `switchToSettings()`.
+On Android versions lower than O and on iOS versions lower than 15.4, this will open the same page as `switchToSettings()`.
 
     cordova.plugins.diagnostic.switchToNotificationSettings();
 
@@ -3580,7 +3488,7 @@ Checks if the application is authorized to use external storage.
 
 Notes for Android:
 - This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return TRUE as permissions are already granted at installation time.
-- This checks for `READ_EXTERNAL_STORAGE` `CAMERA` run-time permission.
+- This checks for `READ_EXTERNAL_STORAGE` run-time permission.
 
 ```
 cordova.plugins.diagnostic.isExternalStorageAuthorized(successCallback, errorCallback);
@@ -3698,8 +3606,6 @@ Whereas this method returns:
 
 which are on external removable storage.
 
-- Requires permission for `READ_EXTERNAL_STORAGE` run-time permission which must be added to `AndroidManifest.xml`.
-
 ```
 cordova.plugins.diagnostic.getExternalSdCardDetails(successCallback, errorCallback);
 ```
@@ -3714,7 +3620,7 @@ Each array entry is an object with the following keys:
     - {String} path - absolute path to the storage location
     - {String} filePath - absolute path prefixed with file protocol for use with cordova-plugin-file
     - {Boolean} canWrite - true if the location is writable
-    - {Integer} freeSpace - number of bytes of free space on the device on which the storage locaiton is mounted.
+    - {Integer} freeSpace - number of bytes of free space on the device on which the storage location is mounted.
     - {String} type - indicates the type of storage location: either "application" if the path is an Android application sandbox path or "root" if the path is the device root.
 - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 The function is passed a single string parameter containing the error message.
@@ -3900,7 +3806,6 @@ This is because the Android camera API requires access to the device's storage t
 On Android <=12, this requires the `WRITE_EXTERNAL_STORAGE` and `READ_EXTERNAL_STORAGE` permissions.
 On Android >12, this requires the `READ_MEDIA_IMAGES` and `READ_MEDIA_VIDEO` permissions.
 
-the `READ_EXTERNAL_STORAGE` permission.
 This is because the [cordova-plugin-camera@2.2+](https://github.com/apache/cordova-plugin-camera) requires both of these permissions.
 
 So to use this method in conjunction with the Cordova camera plugin, make sure you are using the most recent `cordova-plugin-camera` release: v2.2.0 or above.
@@ -3922,17 +3827,17 @@ When requesting permission to use device functionality, a message is displayed t
 These messages are stored in the `{project}-Info.plist` file under `NS*UsageDescription` keys.
 
 Upon installing this plugin into your project, it will add the following default messages to your plist.
-To override these defaults, you can use `<config-file>` blocks in your `config.xml`:
+To override these defaults, you can use `<edit-config>` blocks in your `config.xml`:
 
 `config.xml`
 
     <platform name="ios">
-        <config-file platform="ios" target="*-Info.plist" parent="NSLocationAlwaysUsageDescription">
+        <edit-config file="*-Info.plist" target="NSLocationAlwaysUsageDescription" mode="merge">
             <string>My custom message for always using location.</string>
-        </config-file>
-        <config-file platform="ios" target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
+        </edit-config>
+        <edit-config file="*-Info.plist" target="NSLocationWhenInUseUsageDescription" mode="merge">
             <string>My custom message for using location when in use.</string>
-        </config-file>
+        </edit-config>
     </platform>
 
 # Example project
