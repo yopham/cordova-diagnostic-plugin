@@ -25,8 +25,9 @@ package cordova.plugins;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
-import androidx.core.os.EnvironmentCompat;
 import android.util.Log;
+
+import androidx.core.os.EnvironmentCompat;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -162,9 +163,7 @@ public class Diagnostic_External_Storage extends CordovaPlugin{
     protected long getFreeSpaceInBytes(String path) {
         try {
             StatFs stat = new StatFs(path);
-            long blockSize = stat.getBlockSize();
-            long availableBlocks = stat.getAvailableBlocks();
-            return availableBlocks * blockSize;
+            return stat.getAvailableBytes();
         } catch (IllegalArgumentException e) {
             // The path was invalid. Just return 0 free bytes.
             return 0;
