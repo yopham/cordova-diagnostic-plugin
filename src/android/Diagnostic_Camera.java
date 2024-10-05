@@ -25,6 +25,7 @@ package cordova.plugins;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.util.Log;
+import android.os.Build;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -55,7 +56,9 @@ public class Diagnostic_Camera extends CordovaPlugin{
     protected static final String cameraPermission = "CAMERA";
     protected static String[] storagePermissions;
     static {
-        if (android.os.Build.VERSION.SDK_INT >= 33) { // Build.VERSION_CODES.TIRAMISU / Android 13
+        if (android.os.Build.VERSION.SDK_INT >= 34) { // Build.VERSION_CODES.UPSIDE_DOWN_CAKE / Android 14
+            storagePermissions = new String[]{ "READ_MEDIA_IMAGES", "READ_MEDIA_VIDEO", "READ_MEDIA_VISUAL_USER_SELECTED" };
+        } else if (android.os.Build.VERSION.SDK_INT >= 33) { // Build.VERSION_CODES.TIRAMISU / Android 13
             storagePermissions = new String[]{ "READ_MEDIA_IMAGES", "READ_MEDIA_VIDEO" };
         } else {
             storagePermissions = new String[]{ "READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE" };
@@ -123,7 +126,9 @@ public class Diagnostic_Camera extends CordovaPlugin{
                 requestCameraAuthorization(args, callbackContext);
             } else if(action.equals("getCameraAuthorizationStatus")) {
                 getCameraAuthorizationStatus(args, callbackContext);
-            } else {
+            } else if(action.equals("getCameraAuthorizationStatuses")) {
+                getCameraAuthorizationStatuses(args, callbackContext);
+            }else {
                 diagnostic.handleError("Invalid action");
                 return false;
             }
@@ -162,10 +167,59 @@ public class Diagnostic_Camera extends CordovaPlugin{
         Diagnostic.instance._requestRuntimePermissions(Diagnostic.instance.stringArrayToJsonArray(permissions), requestId);
     }
 
-    private void getCameraAuthorizationStatus(JSONArray args, CallbackContext callbackContext) throws Exception{
+    private void getCameraAuthorizationStatuses(JSONArray args, CallbackContext callbackContext) throws Exception{
         boolean storage = args.getBoolean(0);
         String[] permissions = getPermissions(storage);
         JSONObject statuses = Diagnostic.instance._getPermissionsAuthorizationStatus(permissions);
         callbackContext.success(statuses);
+    }
+
+    private void getCameraAuthorizationStatus(JSONArray args, CallbackContext callbackContext) throws Exception{
+        boolean storage = args.getBoolean(0);
+        String[] permissions = getPermissions(storage);
+        JSONObject statuses = Diagnostic.instance._getPermissionsAuthorizationStatus(permissions);
+
+        String status;
+        if (
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                        (
+                                getStatusForPermission(statuses, "READ_MEDIA_IMAGES").equals("GRANTED") ||
+                                        getStatusForPermission(statuses, "READ_MEDIA_VIDEO").equals("GRANTED")
+                        )
+        ) {
+            // Full access on Android 13 (API level 33) or higher
+            status = "GRANTED";
+        } else if (
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE &&
+                getStatusForPermission(statuses, "READ_MEDIA_VISUAL_USER_SELECTED").equals("GRANTED")
+        ) {
+            // Partial access on Android 14 (API level 34) or higher
+            status = "LIMITED";
+        }  else if (
+                getStatusForPermission(statuses, "READ_EXTERNAL_STORAGE").equals("GRANTED")
+        ) {
+            // Full access up to Android 12 (API level 32)
+            status = "GRANTED";
+        } else {
+            // Access denied or not requested
+
+            // if any permission is not requested, return NOT_REQUESTED
+            if (getStatusForPermission(statuses, "CAMERA").equals("NOT_REQUESTED") ||
+                    getStatusForPermission(statuses, "READ_EXTERNAL_STORAGE").equals("NOT_REQUESTED") ||
+                    getStatusForPermission(statuses, "WRITE_EXTERNAL_STORAGE").equals("NOT_REQUESTED") ||
+                    getStatusForPermission(statuses, "READ_MEDIA_IMAGES").equals("NOT_REQUESTED") ||
+                    getStatusForPermission(statuses, "READ_MEDIA_VIDEO").equals("NOT_REQUESTED") ||
+                    getStatusForPermission(statuses, "READ_MEDIA_VISUAL_USER_SELECTED").equals("NOT_REQUESTED")
+            ) {
+                status = "NOT_REQUESTED";
+            } else {
+                status = "DENIED";
+            }
+        }
+        callbackContext.success(status);
+    }
+
+    private String getStatusForPermission(JSONObject statuses, String permissionName) throws JSONException {
+        return statuses.has(permissionName) ? statuses.getString(permissionName) : "DENIED";
     }
 }

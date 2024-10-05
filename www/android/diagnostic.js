@@ -88,7 +88,9 @@ var Diagnostic = (function(){
         // User denied access to this permission and checked "Never Ask Again" box.
         "DENIED_ALWAYS": "DENIED_ALWAYS",
         // App has not yet requested access to this permission.
-        "NOT_REQUESTED": "NOT_REQUESTED"
+        "NOT_REQUESTED": "NOT_REQUESTED",
+        // Limited access to the photo library on Android 14 (API 34) and above
+        "LIMITED": "LIMITED"
     };
 
     Diagnostic.cpuArchitecture = {
@@ -941,6 +943,26 @@ var Diagnostic = (function(){
     Diagnostic.getCameraAuthorizationStatus = function(params){
         if(cordova.plugins.diagnostic.camera){
             cordova.plugins.diagnostic.camera.getCameraAuthorizationStatus.apply(this, arguments);
+        }else{
+            throw "Diagnostic Camera module is not installed";
+        }
+    };
+
+    /**
+     * Returns the individual authorisation statuses for runtime permissions to use the camera.
+     * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+     * @param {Object} params - (optional) parameters:
+     *  - {Function} successCallback - function to call on successful request for runtime permission status.
+     * This callback function is passed a single object parameter where each key indicates the permission name and the value defines the current authorisation status as a value in cordova.plugins.diagnostic.permissionStatus.
+     *  - {Function} errorCallback - function to call on failure to request authorisation status.
+     * - {Boolean} storage - (Android only) If true, queries storage permissions in addition to CAMERA run-time permission.
+     *  On Android 13+, storage permissions are READ_MEDIA_IMAGES and READ_MEDIA_VIDEO. On Android 9-12, storage permission is READ_EXTERNAL_STORAGE.
+     *  cordova-plugin-camera requires both storage and camera permissions.
+     *  Defaults to true.
+     */
+    Diagnostic.getCameraAuthorizationStatuses = function(params){
+        if(cordova.plugins.diagnostic.camera){
+            cordova.plugins.diagnostic.camera.getCameraAuthorizationStatuses.apply(this, arguments);
         }else{
             throw "Diagnostic Camera module is not installed";
         }

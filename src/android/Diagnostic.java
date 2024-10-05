@@ -140,6 +140,9 @@ public class Diagnostic extends CordovaPlugin{
         Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_MEDIA_IMAGES", "android.permission.READ_MEDIA_IMAGES");
         Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_MEDIA_VIDEO", "android.permission.READ_MEDIA_VIDEO");
 
+        // API 34+
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_MEDIA_VISUAL_USER_SELECTED", "android.permission.READ_MEDIA_VISUAL_USER_SELECTED");
+
         permissionsMap = Collections.unmodifiableMap(_permissionsMap);
     }
 
@@ -175,6 +178,9 @@ public class Diagnostic extends CordovaPlugin{
         Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_MEDIA_AUDIO", 33);
         Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_MEDIA_IMAGES", 33);
         Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_MEDIA_VIDEO", 33);
+
+        // API 34+
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_MEDIA_VISUAL_USER_SELECTED", 34);
 
         minSdkPermissionMap = Collections.unmodifiableMap(_permissionsMap);
     }

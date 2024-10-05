@@ -43,6 +43,8 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [getCurrentBatteryLevel()](#getcurrentbatterylevel)
     - [isAirplaneModeEnabled()](#isairplanemodeenabled)
     - [isMobileDataEnabled()](#ismobiledataenabled)
+    - [isAccessibilityModeEnabled()](#isaccessibilitymodeenabled)
+    - [isTouchExplorationEnabled()](#istouchexplorationenabled)
     - [getDeviceOSVersion()](#getdeviceosversion)
     - [getBuildOSVersion()](#getbuildosversion)
   - [Location module](#location-module)
@@ -89,6 +91,7 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [isCameraAvailable()](#iscameraavailable)
     - [isCameraAuthorized()](#iscameraauthorized)
     - [getCameraAuthorizationStatus()](#getcameraauthorizationstatus)
+    - [getCameraAuthorizationStatuses()](#getcameraauthorizationstatuses)
     - [requestCameraAuthorization()](#requestcameraauthorization)
     - [isCameraRollAuthorized()](#iscamerarollauthorized)
     - [getCameraRollAuthorizationStatus()](#getcamerarollauthorizationstatus)
@@ -2307,7 +2310,7 @@ The function is passed a single string parameter containing the error message.
 
 Platforms: Android and iOS
 
-Returns the camera authorization status for the application.
+Returns the combined camera authorization status for the application based on the relevant permissions.
 
 Notes for Android:
 - This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
@@ -2333,6 +2336,42 @@ The function is passed a single string parameter containing the error message.
         function(status){
             if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
                 console.log("Camera use is authorized");
+            }
+        }, function(error){
+            console.error("The following error occurred: "+error);
+        }, false
+    );
+
+### getCameraAuthorizationStatuses()
+
+Platforms: Android
+
+Returns the individual camera authorization statuses for each of the relevant permissions.
+
+Notes for Android:
+- This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+- By default this also checks run-time storage permissions in addition to `CAMERA` permission because [cordova-plugin-camera](https://github.com/apache/cordova-plugin-camera) requires both of these permission sets.
+  - On Android 13+, storage permissions are `READ_MEDIA_IMAGES` and `READ_MEDIA_VIDEO`. On Android 12 and below, storage permissions are `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE`.
+
+```
+cordova.plugins.diagnostic.getCameraAuthorizationStatuses(successCallback, errorCallback, storage)
+```
+
+#### Parameters
+- {Object} params - (optional) parameters:
+  - {Function} successCallback -  The callback which will be called when operation is successful.
+    The function is passed a single object parameter where each key indicates the permission name and the value indicates the authorization status as a [permissionStatus constant](#permissionstatus-constants).
+  - {Function} errorCallback -  The callback which will be called when operation encounters an error.
+    The function is passed a single string parameter containing the error message.
+  - {Boolean} storage - (Android only) If true, requests storage permissions in addition to `CAMERA` run-time permission. Defaults to true.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getCameraAuthorizationStatuses(
+        function(statuses){
+            for(var permission in statuses){
+                console.log(permission + " permission is: " + statuses[permission]));
             }
         }, function(error){
             console.error("The following error occurred: "+error);
