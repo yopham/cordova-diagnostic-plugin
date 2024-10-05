@@ -1,5 +1,8 @@
 # CHANGELOG
 
+**v7.2.1**
+* (android) fix logic in native resolution of single combined permission status in `getCameraAuthorizationStatus()` so it handles case where storage permissions are not requested
+
 **v7.2.0**
 * (android) feat: direct getExternalSdCardDetails without permission request
   * Merged from PR [#501](https://github.com/dpa99c/cordova-diagnostic-plugin/pull/501)
