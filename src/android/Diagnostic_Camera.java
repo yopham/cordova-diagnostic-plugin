@@ -179,47 +179,75 @@ public class Diagnostic_Camera extends CordovaPlugin{
         String[] permissions = getPermissions(storage);
         JSONObject statuses = Diagnostic.instance._getPermissionsAuthorizationStatus(permissions);
 
-        String status;
-        if (
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-                        (
-                                getStatusForPermission(statuses, "READ_MEDIA_IMAGES").equals("GRANTED") ||
-                                        getStatusForPermission(statuses, "READ_MEDIA_VIDEO").equals("GRANTED")
-                        )
-        ) {
-            // Full access on Android 13 (API level 33) or higher
-            status = "GRANTED";
-        } else if (
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE &&
-                getStatusForPermission(statuses, "READ_MEDIA_VISUAL_USER_SELECTED").equals("GRANTED")
-        ) {
-            // Partial access on Android 14 (API level 34) or higher
-            status = "LIMITED";
-        }  else if (
-                getStatusForPermission(statuses, "READ_EXTERNAL_STORAGE").equals("GRANTED")
-        ) {
-            // Full access up to Android 12 (API level 32)
-            status = "GRANTED";
-        } else {
-            // Access denied or not requested
+        String cameraStatus = getStatusForPermission(statuses, cameraPermission);
 
-            // if any permission is not requested, return NOT_REQUESTED
-            if (getStatusForPermission(statuses, "CAMERA").equals("NOT_REQUESTED") ||
-                    getStatusForPermission(statuses, "READ_EXTERNAL_STORAGE").equals("NOT_REQUESTED") ||
-                    getStatusForPermission(statuses, "WRITE_EXTERNAL_STORAGE").equals("NOT_REQUESTED") ||
-                    getStatusForPermission(statuses, "READ_MEDIA_IMAGES").equals("NOT_REQUESTED") ||
-                    getStatusForPermission(statuses, "READ_MEDIA_VIDEO").equals("NOT_REQUESTED") ||
-                    getStatusForPermission(statuses, "READ_MEDIA_VISUAL_USER_SELECTED").equals("NOT_REQUESTED")
+        String storageStatus = "DENIED";
+        if(storage) {
+            if (
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                            (
+                                    getStatusForPermission(statuses, "READ_MEDIA_IMAGES").equals("GRANTED") ||
+                                            getStatusForPermission(statuses, "READ_MEDIA_VIDEO").equals("GRANTED")
+                            )
             ) {
-                status = "NOT_REQUESTED";
+                // Full access on Android 13 (API level 33) or higher
+                storageStatus = "GRANTED";
+            } else if (
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE &&
+                            getStatusForPermission(statuses, "READ_MEDIA_VISUAL_USER_SELECTED").equals("GRANTED")
+            ) {
+                // Partial access on Android 14 (API level 34) or higher
+                storageStatus = "LIMITED";
+            } else if (
+                    getStatusForPermission(statuses, "READ_EXTERNAL_STORAGE").equals("GRANTED")
+            ) {
+                // Full access up to Android 12 (API level 32)
+                storageStatus = "GRANTED";
             } else {
-                status = "DENIED";
+                // Combination of statuses for all storage permissions for relevant API level
+                storageStatus = combinePermissionStatuses(statuses);
             }
         }
+        String status = cameraStatus;
+        if(storage){
+            status = combinePermissionStatuses(new String[]{cameraStatus, storageStatus});
+        }
+
         callbackContext.success(status);
     }
 
     private String getStatusForPermission(JSONObject statuses, String permissionName) throws JSONException {
         return statuses.has(permissionName) ? statuses.getString(permissionName) : "DENIED";
+    }
+
+    private boolean anyStatusIs(String status, String[] statuses){
+        for(String s : statuses){
+            if(s.equals(status)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String combinePermissionStatuses(JSONObject permissionsStatuses) throws JSONException {
+        String[] statuses = new String[storagePermissions.length];
+        for(int i = 0; i < storagePermissions.length; i++){
+            statuses[i] = getStatusForPermission(permissionsStatuses, storagePermissions[i]);
+        }
+        return combinePermissionStatuses(statuses);
+    }
+
+    private String combinePermissionStatuses(String[] statuses){
+        if(anyStatusIs("DENIED_ALWAYS", statuses)){
+            return "DENIED_ALWAYS";
+        }else if(anyStatusIs("LIMITED", statuses)){
+            return "LIMITED";
+        }else if(anyStatusIs("DENIED", statuses)){
+            return "DENIED";
+        }else if(anyStatusIs("GRANTED", statuses)){
+            return "GRANTED";
+        }else{
+            return "NOT_REQUESTED";
+        }
     }
 }
