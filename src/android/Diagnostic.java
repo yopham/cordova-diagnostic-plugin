@@ -64,7 +64,8 @@ import android.view.accessibility.AccessibilityManager;
 
 import androidx.core.app.ActivityCompat;
 
-import cordova.plugins.diagnostic.example.BuildConfig;
+import static android.content.Context.CONTEXT_INCLUDE_CODE;
+import static android.content.Context.CONTEXT_IGNORE_SECURITY;
 
 /**
  * Diagnostic plugin implementation for Android
@@ -546,8 +547,11 @@ public class Diagnostic extends CordovaPlugin{
         return result;
     }
 
-    private boolean isDebugBuild() {
-        boolean result = BuildConfig.DEBUG;
+    private boolean isDebugBuild() throws Exception {
+        Context context = this.cordova.getActivity().getApplicationContext();
+        ClassLoader classLoader = context.createPackageContext(context.getPackageName(), CONTEXT_INCLUDE_CODE | CONTEXT_IGNORE_SECURITY).getClassLoader();
+        Class<?> buildConfigClass = classLoader.loadClass(context.getPackageName() + ".BuildConfig");
+        boolean result = buildConfigClass.getField("DEBUG").getBoolean(null);
         logDebug("Debug build: " + result);
         return result;
     }
