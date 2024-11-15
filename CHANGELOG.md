@@ -1,5 +1,11 @@
 # CHANGELOG
 
+**v7.2.2**
+* (ios & android) feat: add isDebugBuild()
+* fix: Separate isMobileDataEnabled() for Android vs isMobileDataAuthorized() for iOS. 
+  * Resolves [#482](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/482)
+
+
 **v7.2.1**
 * (android) fix logic in native resolution of single combined permission status in `getCameraAuthorizationStatus()` so it handles case where storage permissions are not requested
 
