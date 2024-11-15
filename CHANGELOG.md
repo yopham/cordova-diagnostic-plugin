@@ -1,5 +1,8 @@
 # CHANGELOG
 
+**v7.2.3**
+* (android) bugfix: dynamically resolve BuildConfig class (and remove hard-coded example app package name) when determining isDebugBuild()
+
 **v7.2.2**
 * (ios & android) feat: add isDebugBuild()
 * fix: Separate isMobileDataEnabled() for Android vs isMobileDataAuthorized() for iOS. 
