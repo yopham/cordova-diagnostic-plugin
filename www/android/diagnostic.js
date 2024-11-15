@@ -1560,6 +1560,22 @@ var Diagnostic = (function(){
         }
     };
 
+    /**
+     * Checks if the current app build is a debug build.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single boolean parameter which is TRUE if the app is a debug build.
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.isDebugBuild = function(successCallback, errorCallback) {
+        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
+            errorCallback,
+            'Diagnostic',
+            'isDebugBuild',
+            []);
+    };
+
 
     return Diagnostic;
 });

@@ -259,6 +259,22 @@ static CTCellularData* cellularData;
     }];
 }
 
+- (void) isDebugBuild: (CDVInvokedUrlCommand*)command
+{
+    [self.commandDelegate runInBackground:^{
+        @try {
+            bool result = false;
+            #ifdef DEBUG
+                result = true;
+            #endif
+            [diagnostic sendPluginResultBool:result :command];
+        }
+        @catch (NSException *exception) {
+            [diagnostic handlePluginException:exception :command];
+        }
+    }];
+}
+
 /********************************/
 #pragma mark - Send results
 /********************************/

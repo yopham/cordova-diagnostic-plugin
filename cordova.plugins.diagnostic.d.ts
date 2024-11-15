@@ -305,6 +305,17 @@ interface Diagnostic {
         successCallback: () => void
     ) => void;
 
+    /**
+     * Returns true if the current build is a debug build.
+     * @param successCallback
+     * @param errorCallback
+     */
+    isDebugBuild?: (
+        successCallback: (enabled: boolean) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+
 
     /**
      * ANDROID ONLY

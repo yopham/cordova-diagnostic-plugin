@@ -47,6 +47,7 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [isTouchExplorationEnabled()](#istouchexplorationenabled)
     - [getDeviceOSVersion()](#getdeviceosversion)
     - [getBuildOSVersion()](#getbuildosversion)
+    - [isDebugBuild()](#isdebugbuild)
   - [Location module](#location-module)
     - [locationMode constants](#locationmode-constants)
     - [locationAuthorizationMode constants](#locationauthorizationmode-constants)
@@ -939,7 +940,7 @@ The function is passed a single string parameter containing the error message.
 #### Example usage
 
     cordova.plugins.diagnostic.isAirplaneModeEnabled(function(enabled){
-        console.log(`Airplane mode is currently ${enabled ? 'enabled' : 'disabled'}%`);
+        console.log(`Airplane mode is currently ${enabled ? 'enabled' : 'disabled'}`);
     });
 
 
@@ -967,7 +968,7 @@ The function is passed a single string parameter containing the error message.
 #### Example usage
 
     cordova.plugins.diagnostic.isMobileDataEnabled(function(enabled){
-        console.log(`Mobile data is currently ${enabled ? 'enabled' : 'disabled'}%`);
+        console.log(`Mobile data is currently ${enabled ? 'enabled' : 'disabled'}`);
     });
     
 ### isAccessibilityModeEnabled()
@@ -988,7 +989,7 @@ This callback function is passed a single boolean parameter which is TRUE if acc
 #### Example usage
 
     cordova.plugins.diagnostic.isAccessibilityModeEnabled(function(enabled){
-        console.log(`Accessibility Mode is currently ${enabled ? 'enabled' : 'disabled'}%`);
+        console.log(`Accessibility Mode is currently ${enabled ? 'enabled' : 'disabled'}`);
     });
     
 
@@ -1010,7 +1011,7 @@ This callback function is passed a single boolean parameter which is TRUE if tou
 #### Example usage
 
     cordova.plugins.diagnostic.isTouchExplorationEnabled(function(enabled){
-        console.log(`touch exploration is currently ${enabled ? 'enabled' : 'disabled'}%`);
+        console.log(`touch exploration is currently ${enabled ? 'enabled' : 'disabled'}`);
     });
     
 
@@ -1037,9 +1038,9 @@ The function is passed a single string parameter containing the error message.
 #### Example usage
 
     cordova.plugins.diagnostic.getDeviceOSVersion(function(details){
-        console.log(`Version: ${details.version}%`); // "13.0"
-        console.log(`API level: ${details.apiLevel}%`); // 33
-        console.log(`API name: ${details.apiName}%`); // "TIRAMISU"
+        console.log(`Version: ${details.version}`); // "13.0"
+        console.log(`API level: ${details.apiLevel}`); // 33
+        console.log(`API name: ${details.apiName}`); // "TIRAMISU"
     });
 
 ### getBuildOSVersion()
@@ -1066,13 +1067,32 @@ The function is passed a single string parameter containing the error message.
 #### Example usage
 
     cordova.plugins.diagnostic.getBuildOSVersion(function(details){
-        console.log(`Target API level: ${details.targetApiLevel}%`); // 33
-        console.log(`Target API name: ${details.targetApiLevel}%`); // "TIRAMISU"
-        console.log(`Minimum API level: ${details.targetApiLevel}%`); // 21
-        console.log(`Target API name: ${details.targetApiLevel}%`); // "LOLLIPOP"
+        console.log(`Target API level: ${details.targetApiLevel}`); // 33
+        console.log(`Target API name: ${details.targetApiLevel}`); // "TIRAMISU"
+        console.log(`Minimum API level: ${details.targetApiLevel}`); // 21
+        console.log(`Target API name: ${details.targetApiLevel}`); // "LOLLIPOP"
     });
 
+### isDebugBuild()
 
+Platforms: Android & iOS
+
+Checks if currently running app build is a debug build.
+
+    cordova.plugins.diagnostic.isDebugBuild(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when the operation is successful.
+  This callback function is passed a single boolean parameter which is TRUE if touch exploration (in accessibility mode) is enabled.
+- {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+  This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isDebugBuild(function(isDebug){
+        console.log(`current app build type is: ${isDebug ? 'debug' : 'release'}`);
+    });
 
 ## Location module
 

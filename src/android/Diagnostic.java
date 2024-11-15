@@ -64,6 +64,8 @@ import android.view.accessibility.AccessibilityManager;
 
 import androidx.core.app.ActivityCompat;
 
+import cordova.plugins.diagnostic.example.BuildConfig;
+
 /**
  * Diagnostic plugin implementation for Android
  */
@@ -354,6 +356,8 @@ public class Diagnostic extends CordovaPlugin{
                 callbackContext.success(getDeviceOSVersion());
             } else if(action.equals("getBuildOSVersion")) {
                 callbackContext.success(getBuildOSVersion());
+            } else if(action.equals("isDebugBuild")) {
+                callbackContext.success(isDebugBuild() ? 1 : 0);
             } else {
                 handleError("Invalid action");
                 return false;
@@ -539,6 +543,12 @@ public class Diagnostic extends CordovaPlugin{
             logDebug(e.getMessage());
         }
         logDebug("Accessibility touch exploration enabled: " + result);
+        return result;
+    }
+
+    private boolean isDebugBuild() {
+        boolean result = BuildConfig.DEBUG;
+        logDebug("Debug build: " + result);
         return result;
     }
 
