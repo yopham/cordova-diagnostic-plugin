@@ -499,7 +499,7 @@ var Diagnostic = (function(){
     };
 
     /**
-     * Checks if mobile data is enabled on device.
+     * Checks if mobile data is enabled in device settings.
      *
      * @param {Function} successCallback -  The callback which will be called when the operation is successful.
      * This callback function is passed a single boolean parameter which is TRUE if mobile data is enabled.

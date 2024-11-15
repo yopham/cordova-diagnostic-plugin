@@ -227,7 +227,7 @@ static CTCellularData* cellularData;
     }];
 }
 
-- (void) isMobileDataEnabled: (CDVInvokedUrlCommand*)command
+- (void) isMobileDataAuthorized: (CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^{
         @try {

@@ -344,6 +344,19 @@ interface Diagnostic {
     ) => void;
 
     /**
+     * IOS ONLY
+     *
+     * Checks if mobile data is authorized for this app.
+     *
+     * @param successCallback
+     * @param errorCallback
+     */
+    isMobileDataAuthorized?: (
+        successCallback: () => boolean,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
      *
      * Checks if accessibility mode is enabled on device.
      *

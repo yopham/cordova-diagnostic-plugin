@@ -43,6 +43,7 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [getCurrentBatteryLevel()](#getcurrentbatterylevel)
     - [isAirplaneModeEnabled()](#isairplanemodeenabled)
     - [isMobileDataEnabled()](#ismobiledataenabled)
+    - [isMobileDataAuthorized()](#ismobiledataauthorized)
     - [isAccessibilityModeEnabled()](#isaccessibilitymodeenabled)
     - [isTouchExplorationEnabled()](#istouchexplorationenabled)
     - [getDeviceOSVersion()](#getdeviceosversion)
@@ -943,16 +944,14 @@ The function is passed a single string parameter containing the error message.
         console.log(`Airplane mode is currently ${enabled ? 'enabled' : 'disabled'}`);
     });
 
-
-=======
     
 ### isMobileDataEnabled()
 
-Platforms: Android and iOS
+Platforms: Android
 
-Checks if mobile (cellular) data is currently enabled on the device.
+Checks if mobile (cellular) data is currently enabled in the device settings.
 
-On Android this requires permission `<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />`
+Requires permission `<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />`
 
 
     cordova.plugins.diagnostic.isMobileDataEnabled(successCallback, errorCallback);
@@ -969,6 +968,30 @@ The function is passed a single string parameter containing the error message.
 
     cordova.plugins.diagnostic.isMobileDataEnabled(function(enabled){
         console.log(`Mobile data is currently ${enabled ? 'enabled' : 'disabled'}`);
+    });``
+
+### isMobileDataAuthorized()
+
+Platforms: iOS
+
+Checks if mobile data is authorized for this app.
+
+Returns true if the per-app Mobile Data setting is set to enabled (regardless of whether the device is currently connected to a cellular network)
+
+    cordova.plugins.diagnostic.isMobileDataAuthorized(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+  The function is passed a single boolean parameter which is TRUE if mobile data is authorized.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+  The function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isMobileDataAuthorized(function(authorized){
+        console.log(`Mobile data is currently ${authorized ? 'authorized' : 'unauthorized'}`);
     });
     
 ### isAccessibilityModeEnabled()
