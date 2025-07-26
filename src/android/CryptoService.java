@@ -1,4 +1,4 @@
-package cordova.plugins;
+package cordova.plugins.diagnostic;
 
 import java.security.SecureRandom;
 

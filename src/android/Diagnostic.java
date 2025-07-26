@@ -62,7 +62,7 @@ import android.view.accessibility.AccessibilityManager;
 
 import androidx.core.app.ActivityCompat;
 
-import cordova.plugins.CryptoService;
+import cordova.plugins.diagnostic.CryptoService;
 
 import static android.content.Context.CONTEXT_INCLUDE_CODE;
 import static android.content.Context.CONTEXT_IGNORE_SECURITY;
