@@ -757,9 +757,7 @@ public class Diagnostic extends CordovaPlugin{
     }
 
     protected String generateRandom(){
-        Random rn = new Random();
-        int random = rn.nextInt(1000000) + 1;
-        return Integer.toString(random);
+        return CryptoService.generateRandomId();
     }
 
     protected String[] jsonArrayToStringArray(JSONArray array) throws JSONException{
