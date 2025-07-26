@@ -31,8 +31,6 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
-
 
 import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.CallbackContext;
@@ -63,6 +61,8 @@ import android.view.accessibility.AccessibilityManager;
 
 
 import androidx.core.app.ActivityCompat;
+
+import cordova.plugins.CryptoService;
 
 import static android.content.Context.CONTEXT_INCLUDE_CODE;
 import static android.content.Context.CONTEXT_IGNORE_SECURITY;
