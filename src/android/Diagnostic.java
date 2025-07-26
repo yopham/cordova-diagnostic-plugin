@@ -31,6 +31,8 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+import java.security.SecureRandom;
 
 import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.CallbackContext;
@@ -61,8 +63,6 @@ import android.view.accessibility.AccessibilityManager;
 
 
 import androidx.core.app.ActivityCompat;
-
-import cordova.plugins.diagnostic.CryptoService;
 
 import static android.content.Context.CONTEXT_INCLUDE_CODE;
 import static android.content.Context.CONTEXT_IGNORE_SECURITY;
@@ -756,8 +756,16 @@ public class Diagnostic extends CordovaPlugin{
         return requestId;
     }
 
-    protected String generateRandom(){
-        return CryptoService.generateRandomId();
+    protected String generateRandom() {
+        // Cryptographically strong random hex string (8 bytes = 16 hex chars)
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] randomBytes = new byte[8];
+        secureRandom.nextBytes(randomBytes);
+        StringBuilder sb = new StringBuilder();
+        for (byte b : randomBytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
     }
 
     protected String[] jsonArrayToStringArray(JSONArray array) throws JSONException{
