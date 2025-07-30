@@ -1,9 +1,9 @@
 {
-    "version": "7.2.3",
-    "name": "cordova.plugins.diagnostic",
+    "version": "1.0.0",
+    "name": "cordova.plugins.diagnostic.cryptographic",
     "cordova_name": "Diagnostic",
-    "description": "Cordova/Phonegap plugin to check the state of Location/WiFi/Camera/Bluetooth device settings.",
-    "author": "Dave Alden",
+    "description": "Cordova/Phonegap plugin to check the state of Location/WiFi/Camera/Bluetooth device settings.  Originally created by Dave Alden",
+    "author": "Yoly Pham",
     "license": "MIT",
     "repository": {
         "type": "git",
